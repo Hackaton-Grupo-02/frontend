@@ -1,0 +1,17 @@
+
+name: CI
+
+on:
+  
+  pull_request:
+    branches: [ "main", "development" ]
+
+jobs:
+  code-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Sonar Cloud
+        run: echo To Be Implemented
