@@ -34,7 +34,7 @@ jobs:
           run: gcloud auth configure-docker ${{ vars.GCP_ARTIFACT_URL }}
 
         - name: Build Docker image
-          run: docker build . -t $IMAGE_NAME --build-arg BACKEND_URL= ${{ vars.BACKEND_URL }}
+          run: docker build --build-arg BACKEND_URL=${{ vars.BACKEND_URL }} . -t $IMAGE_NAME
 
         - name: Push Docker image
           run: docker push $IMAGE_NAME
