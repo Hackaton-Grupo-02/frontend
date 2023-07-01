@@ -5,16 +5,10 @@ ARG BACKEND_URL
 ENV BACKEND_URL ${BACKEND_URL} 
 
 # set the working direction
-WORKDIR /app
+WORKDIR /
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+COPY . ./
 
-# install app dependencies
-
-COPY package.json ./
-COPY package-lock.json ./
-COPY . ./app
 RUN npm install
 RUN npm run build
 
