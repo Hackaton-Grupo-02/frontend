@@ -1,0 +1,43 @@
+name: Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+
+jobs:
+
+  build:
+
+      name: Setup Gcloud Account
+      runs-on: ubuntu-latest
+      env:
+          IMAGE_NAME: ${{ vars.GCP_ARTIFACT_URL }}/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_APP_NAME_FRONTEND }}/${{ vars.GCP_APP_NAME_FRONTEND }}
+      
+      steps:
+
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+        - id: 'auth'
+          uses: google-github-actions/auth@v1
+          with:
+            credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+        - name: 'Set up Cloud SDK'
+          uses: 'google-github-actions/setup-gcloud@v1'
+
+        - name: 'Use gcloud CLI'
+          run: 'gcloud info'
+
+        - name: Configure Docker
+          run: gcloud auth configure-docker ${{ vars.GCP_ARTIFACT_URL }}
+
+        - name: Build Docker image
+          run: docker build . -t $IMAGE_NAME --build-arg BACKEND_URL= ${{ vars.BACKEND_URL }}
+
+        - name: Push Docker image
+          run: docker push $IMAGE_NAME
+
+        - name: Deploy Docker image
+          run: gcloud run deploy ${{ secrets.GCP_APP_NAME_FRONTEND }} --image $IMAGE_NAME --region southamerica-east1 --platform managed
