@@ -12,5 +12,7 @@ COPY . ./
 RUN npm install
 RUN npm run build
 
+EXPOSE 3000
+
 # start app
 CMD ["npm", "start"]
